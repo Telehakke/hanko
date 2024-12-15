@@ -1,0 +1,41 @@
+div.hanko-sortable-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding-left: 8px;
+    border-radius: var(--radius-s);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+div.hanko-sortable-item:hover:not(.hanko-selected) {
+    background-color: var(--color-base-20);
+}
+
+div.hanko-selected {
+    background-color: var(--color-base-30);
+}
+
+button.hanko-touch-none {
+    touch-action: none;
+}
+
+div.hanko-row-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.hanko-flex-1 {
+    flex: 1 1 0;
+}
+
+p.hanko-m-auto {
+    margin: auto;
+}
+
+span.hanko-border-left {
+    border: solid var(--color-accent);
+    border-width: 0 0 0 2px;
+    margin-left: 2px;
+    padding-left: 2px;
+}

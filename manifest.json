@@ -1,0 +1,9 @@
+{
+    "id": "hanko",
+    "name": "Hanko",
+    "version": "1.0.0",
+    "minAppVersion": "1.5.3",
+    "description": "Register and paste any text.",
+    "author": "Telehakke",
+    "isDesktopOnly": false
+}
