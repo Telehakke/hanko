@@ -7,7 +7,7 @@ export default class Timer {
         }
 
         action();
-        this.timerId = setInterval(() => {
+        this.timerId = window.setInterval(() => {
             action();
         }, timeout);
     };

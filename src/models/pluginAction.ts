@@ -31,7 +31,7 @@ abstract class PluginAction {
         const newList = PluginContext.favoriteList.appended(favorite);
         PluginContext.favoriteList = newList;
         this.pluginStateRepository.save(newList.getFavorites());
-        new Notice(PluginContext.translation.testWasRegistered);
+        new Notice(PluginContext.translation.textWasRegistered);
     };
 
     /**

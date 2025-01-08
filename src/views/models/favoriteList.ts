@@ -11,9 +11,7 @@ export class FavoriteList {
 
     private constructor(values: FavoriteListData[]) {
         this._values = values;
-        this.segmenter = new Intl.Segmenter("ja-JP", {
-            granularity: "grapheme",
-        });
+        this.segmenter = new Intl.Segmenter();
     }
 
     get values(): FavoriteListData[] {
