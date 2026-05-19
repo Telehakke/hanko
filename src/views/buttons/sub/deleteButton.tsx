@@ -1,33 +1,28 @@
 import { useSetAtom } from "jotai";
-import PluginContext from "../../../models/pluginContext";
-import PluginStateRepository from "../../../models/pluginStateRepository";
-import { favoriteListAtom } from "../../atoms";
-import React from "react";
+import type { Plugin } from "obsidian";
+import type { JSX } from "react";
+import { Config } from "../../../models/config";
+import { favoriteManagerAtom, selectedIdAtom } from "../../atoms";
 
-/**
- * チェックが付いている要素を削除する
- */
-const DeleteButton = ({
-    pluginStateRepository,
-}: {
-    pluginStateRepository: PluginStateRepository;
-}): React.JSX.Element => {
-    const setFavoriteList = useSetAtom(favoriteListAtom);
+export const DeleteButton = (props: {
+    plugin: Plugin;
+    selectedId: number;
+}): JSX.Element => {
+    const setFavoriteManager = useSetAtom(favoriteManagerAtom);
+    const setSelectedId = useSetAtom(selectedIdAtom);
 
     const handleClick = (): void => {
-        setFavoriteList((v) => {
-            const newList = v.removedAllCheckedItems();
-            PluginContext.favoriteList = newList;
-            pluginStateRepository.save(newList.getFavorites());
-            return newList;
+        setFavoriteManager((f) => {
+            const newValue = f.remove(props.selectedId);
+            Config.syncFavoriteManager(props.plugin, newValue);
+            return newValue;
         });
+        setSelectedId(undefined);
     };
 
     return (
         <button className="hanko-flex-1 mod-warning" onClick={handleClick}>
-            {PluginContext.translation.delete}
+            {Config.translation.delete}
         </button>
     );
 };
-
-export default DeleteButton;

@@ -1,4 +1,5 @@
 import { atom } from "jotai";
-import { FavoriteList } from "./models/favoriteList";
+import { FavoriteManager } from "../models/favoriteManager";
 
-export const favoriteListAtom = atom(FavoriteList.create());
+export const favoriteManagerAtom = atom(new FavoriteManager());
+export const selectedIdAtom = atom<number | undefined>(undefined);

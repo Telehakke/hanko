@@ -1,17 +1,20 @@
+import { getDefaultStore } from "jotai";
+import type { Plugin } from "obsidian";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import PluginStateRepository from "../models/pluginStateRepository";
-import App from "./app";
+import { Config } from "../models/config";
+import { App } from "./App";
+import { favoriteManagerAtom, selectedIdAtom } from "./atoms";
 
-const ReactRoot = (
-    element: HTMLElement,
-    pluginStateRepository: PluginStateRepository
-): void => {
-    createRoot(element).render(
+const defaultStore = getDefaultStore();
+
+export const ReactRoot = (el: HTMLElement, plugin: Plugin): void => {
+    defaultStore.set(favoriteManagerAtom, Config.favoriteManager);
+    defaultStore.set(selectedIdAtom, undefined);
+
+    createRoot(el).render(
         <StrictMode>
-            <App pluginStateRepository={pluginStateRepository} />
-        </StrictMode>
+            <App plugin={plugin} />
+        </StrictMode>,
     );
 };
-
-export default ReactRoot;

@@ -1,82 +1,52 @@
-import PluginStateRepository from "../../models/pluginStateRepository";
-import {
-    closestCenter,
-    DndContext,
-    DragEndEvent,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-} from "@dnd-kit/core";
-import {
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import PluginContext from "../../models/pluginContext";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { useAtom } from "jotai";
-import { favoriteListAtom } from "../atoms";
-import FavoriteListItem from "./sub/favoriteListItem";
-import React from "react";
+import { DragDropProvider } from "@dnd-kit/react";
+import { isSortable } from "@dnd-kit/react/sortable";
+import { useAtomValue, useSetAtom } from "jotai";
+import { Plugin } from "obsidian";
+import { useRef, type JSX } from "react";
+import { Config } from "../../models/config";
+import { favoriteManagerAtom } from "../atoms";
+import { FavoriteListItem } from "./sub/FavoriteListItem";
 
-/**
- * お気に入りの一覧を表示するためのソート可能なリストビュー
- */
-const FavoriteListView = ({
-    pluginStateRepository,
-}: {
-    pluginStateRepository: PluginStateRepository;
-}): React.JSX.Element => {
-    const [favoriteList, setFavoriteList] = useAtom(favoriteListAtom);
-
-    // ドラッグ操作をポインター、またはキーボードで行えるようにする
-    const sensors = useSensors(
-        useSensor(PointerSensor),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
-
-    // ドラッグ中の項目と、その真下にある項目を入れ替える
-    const handleDragEnd = (event: DragEndEvent): void => {
-        const { active, over } = event;
-        if (over == null) return;
-        if (active.id === over.id) return;
-
-        const activeID = active.id.valueOf();
-        const overID = over.id.valueOf();
-        if (typeof activeID !== "number") return;
-        if (typeof overID !== "number") return;
-
-        const oldIndex = favoriteList.findIndexByID(activeID);
-        const newIndex = favoriteList.findIndexByID(overID);
-        if (oldIndex == null) return;
-        if (newIndex == null) return;
-
-        const newList = favoriteList.reordered(oldIndex, newIndex);
-        setFavoriteList(newList);
-        PluginContext.favoriteList = newList;
-        pluginStateRepository.save(newList.getFavorites());
-    };
+export const FavoriteListView = (props: { plugin: Plugin }): JSX.Element => {
+    const setFavoriteManager = useSetAtom(favoriteManagerAtom);
 
     return (
-        <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
+        <DragDropProvider
+            onDragEnd={(event) => {
+                if (event.canceled) return;
+
+                const { source } = event.operation;
+                if (!isSortable(source)) return;
+
+                const { initialIndex, index } = source;
+                if (initialIndex === index) return;
+
+                setFavoriteManager((f) => {
+                    const newValue = f.reorder(initialIndex, index);
+                    Config.syncFavoriteManager(props.plugin, newValue);
+                    return newValue;
+                });
+            }}
         >
-            <SortableContext
-                items={favoriteList.values.map((v) => v.favorite.id)}
-                strategy={verticalListSortingStrategy}
-            >
-                {favoriteList.values.map((v) => (
-                    <FavoriteListItem key={v.favorite.id} listData={v} />
-                ))}
-            </SortableContext>
-        </DndContext>
+            <ListItems />
+        </DragDropProvider>
     );
 };
 
-export default FavoriteListView;
+const ListItems = (): JSX.Element => {
+    const favoriteManager = useAtomValue(favoriteManagerAtom);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+        <div ref={containerRef}>
+            {favoriteManager.favorites.map((f, i) => (
+                <FavoriteListItem
+                    key={f.id}
+                    favorite={f}
+                    index={i}
+                    containerRef={containerRef}
+                />
+            ))}
+        </div>
+    );
+};

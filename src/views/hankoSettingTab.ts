@@ -1,17 +1,12 @@
-import { App, Plugin, PluginSettingTab } from "obsidian";
-import PluginStateRepository from "../models/pluginStateRepository";
-import ReactRoot from "./reactRoot";
+import { Plugin, PluginSettingTab } from "obsidian";
+import { ReactRoot } from "./reactRoot";
 
 export default class HankoSettingTab extends PluginSettingTab {
-    private readonly pluginStateRepository: PluginStateRepository;
+    private readonly plugin: Plugin;
 
-    constructor(
-        app: App,
-        plugin: Plugin,
-        pluginStateRepository: PluginStateRepository
-    ) {
-        super(app, plugin);
-        this.pluginStateRepository = pluginStateRepository;
+    constructor(plugin: Plugin) {
+        super(plugin.app, plugin);
+        this.plugin = plugin;
     }
 
     display(): void {
@@ -19,7 +14,7 @@ export default class HankoSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         const div = createDiv();
-        ReactRoot(div, this.pluginStateRepository);
+        ReactRoot(div, this.plugin);
         containerEl.append(div);
     }
 }
