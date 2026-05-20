@@ -1,35 +1,21 @@
-import PluginStateRepository from "../../models/pluginStateRepository";
 import { useAtomValue } from "jotai";
-import { favoriteListAtom } from "../atoms";
-import React from "react";
-import DeleteButton from "./sub/deleteButton";
-import DecreaseOffsetButton from "./sub/decreaseOffsetButton";
-import IncreaseOffsetButton from "./sub/increaseOffsetButton";
+import type { Plugin } from "obsidian";
+import type { JSX } from "react";
+import { selectedIdAtom } from "../atoms";
+import { DecrementOffsetButton } from "./sub/DecrementOffsetButton";
+import { DeleteButton } from "./sub/DeleteButton";
+import { IncreaseOffsetButton } from "./sub/IncrementOffsetButton";
 
-const Buttons = ({
-    pluginStateRepository,
-}: {
-    pluginStateRepository: PluginStateRepository;
-}): React.JSX.Element => {
-    const favoriteList = useAtomValue(favoriteListAtom);
+export const Buttons = (props: { plugin: Plugin }): JSX.Element => {
+    const selectedId = useAtomValue(selectedIdAtom);
+    if (selectedId == null) return <></>;
 
+    const obj = { selectedId };
     return (
-        <>
-            {favoriteList.hasChecked() && (
-                <div className="hanko-row-buttons">
-                    <IncreaseOffsetButton
-                        pluginStateRepository={pluginStateRepository}
-                    />
-                    <DecreaseOffsetButton
-                        pluginStateRepository={pluginStateRepository}
-                    />
-                    <DeleteButton
-                        pluginStateRepository={pluginStateRepository}
-                    />
-                </div>
-            )}
-        </>
+        <div className="hanko-row-buttons">
+            <IncreaseOffsetButton {...props} {...obj} />
+            <DecrementOffsetButton {...props} {...obj} />
+            <DeleteButton {...props} {...obj} />
+        </div>
     );
 };
-
-export default Buttons;

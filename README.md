@@ -1,32 +1,32 @@
-# About Plugin / プラグインについて
+# Hanko
 
-Add the function to register and paste any text to Obsidian.
+## Features / 機能概要
 
-<!-- prettier-ignore -->
-任意のテキストを登録し貼り付ける機能をObsidianに追加します
+This plugin adds the following features to Obsidian.
 
-# How to use / 使用方法
+このプラグインはObsidianに以下の機能を追加します
 
-## Register and paste any text / 任意のテキストの登録と貼り付け
+- Register and paste any text.
 
-### Right-click menu / 右クリックメニュー
+- 任意のテキストを登録し貼り付ける
 
--   Register: Select text in Edit mode > Right-click menu > Register
--   Paste: Right-click menu > Paste > Select text to paste
+## Installation / インストール方法
 
--   登録：編集モードでテキストを選択 > 右クリックメニュー > 登録
--   貼り付け：右クリックメニュー > 貼り付け > 貼り付けたいテキストを選択
+Obsidian Settings > Community plugins > Browse > Type 'hanko' into the search box > Select the 'Hanko' card > Install > Enable
+
+Obsidianの設定 > コミュニティプラグイン > 閲覧 > 検索ボックスに「hanko」と入力 > 「Hanko」のカードを選択 > インストール > 有効化
+
+## Usage / 使い方
+
+### Register and paste any text / 任意のテキストの登録と貼り付け
+
+- Register: Select text in Edit mode > Right-click menu > Register
+- Paste: Right-click menu > Paste > Select text to paste
+
+- 登録：編集モードでテキストを選択 > 右クリックメニュー > 登録
+- 貼り付け：右クリックメニュー > 貼り付け > 貼り付けたいテキストを選択
 
 ![demo01](readmeAssets/demo01.png)
-
-> [!WARNING]  
-> This plugin works in edit mode.  
-> Doesn't work in preview mode.
->
-> このプラグインは編集モードで動作します  
-> プレビューモードでは動作しません
-
-### Command / コマンド
 
 You can also be operated from the command palette.  
 Type “hanko” in the search box.
@@ -36,24 +36,30 @@ Type “hanko” in the search box.
 
 ![demo02](readmeAssets/demo02.png)
 
-### Ribbon menu / リボンメニュー
-
 You can also be operated from the Ribbon menu.
 
 リボンメニューからも操作できます
 
 ![demo03](readmeAssets/demo03.png)
 
-### Mobile / モバイル
+On mobile devices, you can add commands to the toolbar to use them.
 
-Add commands from “Settings” > “Toolbar” in Obsidian.
+モバイルではツールバーにコマンドを追加して使用します
 
-<!-- prettier-ignore -->
-Obsidianの「設定」 > 「モバイルツールバー」からコマンドを追加します
+- Obsidian Settings > Toolbar
+
+- Obsidianの設定 > モバイルツールバー
 
 ![demo04](readmeAssets/demo04.png)
 
-## Paste with cursor movement / カーソル移動を伴う貼り付け
+> [!WARNING]  
+> This plugin works in edit mode.  
+> Doesn't work in preview mode.
+>
+> このプラグインは編集モードで動作します  
+> プレビューモードでは動作しません
+
+### Paste with cursor movement / カーソル移動を伴う貼り付け
 
 Set the cursor position after pasting from the plugin settings.
 
@@ -66,7 +72,7 @@ Set the cursor position after pasting from the plugin settings.
 >
 > モバイルでは貼り付けメニューが開く際にソフトウェアキーボードが閉じられるため機能しません
 
-## Manage registered items / 登録した項目の管理
+### Manage registered items / 登録した項目の管理
 
 You can delete and reorder items from the plugin settings.
 

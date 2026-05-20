@@ -1,74 +1,66 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import React from "react";
+import { RestrictToVerticalAxis } from "@dnd-kit/abstract/modifiers";
+import { RestrictToElement } from "@dnd-kit/dom/modifiers";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { useAtom } from "jotai";
 import { GripVertical } from "lucide-react";
-import { useSetAtom } from "jotai";
-import { favoriteListAtom } from "../../atoms";
-import { FavoriteListData } from "../../models/favoriteList";
+import { useEffect, useState, type JSX, type RefObject } from "react";
+import type { Favorite } from "../../../models/types";
+import { selectedIdAtom } from "../../atoms";
 
-/**
- * ソート可能なリストの項目
- */
-const FavoriteListItem = ({
-    listData,
+export const FavoriteListItem = ({
+    favorite,
+    index,
+    containerRef,
 }: {
-    listData: FavoriteListData;
-}): React.JSX.Element => {
-    const setFavoriteList = useSetAtom(favoriteListAtom);
+    favorite: Favorite;
+    index: number;
+    containerRef: RefObject<HTMLDivElement | null>;
+}): JSX.Element => {
+    const [selectedId, setSelectedId] = useAtom(selectedIdAtom);
+    const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    const { ref, handleRef } = useSortable({
+        id: favorite.id,
+        index,
+        modifiers: [
+            RestrictToVerticalAxis, // ソートの軸を垂直に制限
+            RestrictToElement.configure({
+                element: container, // container要素の範囲内でのみ移動可能にする
+            }),
+        ],
+    });
 
-    const {
-        active,
-        attributes,
-        listeners,
-        setActivatorNodeRef,
-        setNodeRef,
-        transform,
-        transition,
-    } = useSortable({ id: listData.favorite.id });
+    useEffect(() => {
+        setContainer(containerRef.current);
+    }, [containerRef]);
 
-    // ドラッグ操作に合わせて要素を移動させるためのCSSスタイル
-    const style: { style: React.CSSProperties } = {
-        style: {
-            transform: CSS.Transform.toString(transform),
-            transition: transition,
-            opacity: active?.id === listData.favorite.id ? 0.5 : 1.0,
-        },
+    const handleClick = (): void => {
+        setSelectedId((id) => (id === favorite.id ? undefined : favorite.id));
     };
 
-    // チェック状態を記録する
-    const handleClick = () => {
-        setFavoriteList((v) =>
-            v.changed(listData.favorite.id, !listData.checked)
-        );
-    };
-
-    const text = listData.favorite.text;
-
-    // prettier-ignore
     return (
         <div
-            className={`hanko-sortable-item ${listData.checked ? "hanko-selected" : ""}`}
-            ref={setNodeRef}
-            {...style}
+            className={`hanko-sortable-item ${selectedId === favorite.id ? "hanko-selected" : ""}`}
+            ref={ref}
+            onClick={handleClick}
         >
-            <div className="hanko-flex-1" onClick={handleClick}>
-                <p className="hanko-m-auto">
-                    {text.substring(0, text.length - listData.favorite.strOffset)}
-                    <span className="hanko-border-left">
-                        {text.substring(text.length - listData.favorite.strOffset)}
-                    </span>
-                </p>
-            </div>
-            <button
-                className="clickable-icon hanko-touch-none"
-                ref={setActivatorNodeRef}
-                {...attributes}
-                {...listeners}
-            >
+            <Text favorite={favorite} />
+            <button className="clickable-icon hanko-touch-none" ref={handleRef}>
                 <GripVertical />
             </button>
         </div>
     );
 };
 
-export default FavoriteListItem;
+const Text = ({ favorite }: { favorite: Favorite }): JSX.Element => {
+    const text = favorite.text;
+    const str1 = text.substring(0, text.length - favorite.strOffset);
+    const str2 = text.substring(text.length - favorite.strOffset);
+    return (
+        <div className="hanko-flex-1">
+            <p className="hanko-m-auto">
+                {str1}
+                <span className="hanko-border-left">{str2}</span>
+            </p>
+        </div>
+    );
+};

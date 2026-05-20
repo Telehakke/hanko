@@ -1,9 +1,4 @@
-const LanguageEnum = {
-    en: "en",
-    ja: "ja",
-} as const;
-
-export type Translation = {
+export type Translation = Readonly<{
     hankoRegister: string;
     hankoPaste: string;
     register: string;
@@ -12,7 +7,7 @@ export type Translation = {
     textIsNotSelected: string;
     textIsUnregistered: string;
     delete: string;
-};
+}>;
 
 const translationEN: Translation = {
     hankoRegister: "Hanko: Register",
@@ -36,13 +31,7 @@ const translationJA: Translation = {
     delete: "削除",
 };
 
-export default class Translator {
-    private static readonly translations: Map<string, Translation> = new Map([
-        [LanguageEnum.en, translationEN],
-        [LanguageEnum.ja, translationJA],
-    ]);
-
-    static getTranslation = (language: string): Translation => {
-        return this.translations.get(language) ?? translationEN;
-    };
-}
+export const getTranslation = (lang: string): Translation => {
+    if (lang.startsWith("ja")) return translationJA;
+    return translationEN;
+};

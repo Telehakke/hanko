@@ -1,10 +1,9 @@
+import babel from "@rolldown/plugin-babel";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import replace from "@rollup/plugin-replace";
 
-// https://vite.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
     build: {
         outDir: "",
         emptyOutDir: false,
@@ -13,14 +12,17 @@ export default defineConfig({
             fileName: () => "main.js",
             formats: ["cjs"],
         },
-        rollupOptions: {
+        rolldownOptions: {
+            output: {
+                assetFileNames(chunkInfo) {
+                    if (chunkInfo.names[0] === "hanko.css") return "styles.css";
+                    return "assets/[name]-[hash][extname]";
+                },
+            },
             external: ["obsidian", "@codemirror/view"],
-            plugins: [
-                replace({
-                    preventAssignment: true,
-                    "process.env.NODE_ENV": '"production"',
-                }),
-            ],
         },
+    },
+    define: {
+        "process.env.NODE_ENV": JSON.stringify("production"),
     },
 });

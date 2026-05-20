@@ -1,25 +1,13 @@
-import { useSetAtom } from "jotai";
-import React from "react";
-import { favoriteListAtom } from "./atoms";
-import PluginStateRepository from "../models/pluginStateRepository";
-import FavoriteListView from "./favoriteListView/favoriteListView";
-import Buttons from "./buttons/buttons";
-import PluginContext from "../models/pluginContext";
+import type { Plugin } from "obsidian";
+import type { JSX } from "react";
+import { Buttons } from "./buttons/Buttons";
+import { FavoriteListView } from "./favoriteListView/FavoriteListView";
 
-const App = ({
-    pluginStateRepository,
-}: {
-    pluginStateRepository: PluginStateRepository;
-}): React.JSX.Element => {
-    const setFavoriteList = useSetAtom(favoriteListAtom);
-    setFavoriteList(PluginContext.favoriteList.uncheckedAll());
-
+export const App = (props: { plugin: Plugin }): JSX.Element => {
     return (
         <>
-            <FavoriteListView pluginStateRepository={pluginStateRepository} />
-            <Buttons pluginStateRepository={pluginStateRepository} />
+            <FavoriteListView {...props} />
+            <Buttons {...props} />
         </>
     );
 };
-
-export default App;
